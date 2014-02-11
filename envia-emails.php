@@ -66,6 +66,7 @@ function email_smtp($smtpHost, $smtpUsername, $smtpPassword, $from, $from_name, 
 // classic way
 function email_classic($from, $from_name, $to, $to_name, $subject, $message){
 
+	$from = htmlentities($from_name."<".$from.">");
 
 	$headers = "From: {$from}\n";
 	$headers .= "Reply-To: {$from}\n";
