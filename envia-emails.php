@@ -14,13 +14,13 @@ $to_name 		= "your company";
 
 $subject 		= "Mail Test at " . strftime("%T", time());
 $message 		= "This a test";
-$Body			= "<h2>This a test</h2><p>an a paragraph</p>";
+$Body			= file_get_contents('./emails/email_lite.html');
 
 
 // PhpMailer SMTP
 email_smtp($smtpHost, $smtpUsername, $smtpPassword, $from, $from_name, $to, $to_name, $subject, $Body);
 
-// Classic way with headers
+// Classic way with header
 // email_classic($from, $from_name, $to, $to_name, $subject, $message);
 
 
@@ -31,6 +31,7 @@ function email_smtp($smtpHost, $smtpUsername, $smtpPassword, $from, $from_name, 
 
 	//SMTP Settings
 	$mail = new PHPMailer();
+	$mail->CharSet = "UTF-8";
 	$mail->IsSMTP();
 	$mail->SMTPAuth   = true; 
 	$mail->SMTPSecure = "tls"; 
