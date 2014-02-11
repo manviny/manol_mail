@@ -1,36 +1,57 @@
 <?php 
 
-// PhpMailer
+
 
 
 require_once("./includes/class.phpmailer.php");
 require_once("./includes/class.smtp.php");
 require_once("./includes/phpmailer.lang-es.php");
+require_once("./includes/mail_config.php");
 
 
-//SMTP Settings
-$mail = new PHPMailer();
-$mail->IsSMTP();
-// $mail->SMTPAuth   = true; 
-// $mail->SMTPSecure = "tls"; 
-$mail->Port = "25";
-$mail->Host       = "";
-$mail->Username   = "";
-$mail->Password   = "";
-//
+$to 			= "name@email.com";
+$to_name 		= "your company";
 
-$mail->SetFrom('info@email.com', 'Name First name'); //from (verified email address)
-$mail->addReplyTo('info@email.com', 'Name First name');
-$mail->Subject = "Mail Test at " . strftime("%T", time()); //subject
+$subject 		= "Mail Test at " . strftime("%T", time());
+$message 		= "This a test";
+$Body			= "<h2>This a test</h2><p>an a paragraph</p>";
 
-//message
-$Body= "<h2>This a test</h2><p>an a paragraph</p>";
-$mail->Body = $Body;
-$mail->IsHTML(true);
-$mail->addAttachment("img/logo360.png");
 
-//recipient
-$mail->AddAddress("name@name.es", "manol"); 
+// PhpMailer SMTP
+email_smtp($smtpHost, $smtpUsername, $smtpPassword, $from, $from_name, $to, $to_name, $subject, $Body);
+
+// Classic way with headers
+// email_classic($from, $from_name, $to, $to_name, $subject, $message);
+
+
+
+
+// PhpMailer
+function email_smtp($smtpHost, $smtpUsername, $smtpPassword, $from, $from_name, $to, $to_name, $subject, $Body){
+
+	//SMTP Settings
+	$mail = new PHPMailer();
+	$mail->IsSMTP();
+	$mail->SMTPAuth   = true; 
+	$mail->SMTPSecure = "tls"; 
+	$mail->Port 		= "25";
+	$mail->Host       = $smtpHost;
+	$mail->Username   = $smtpUsername;
+	$mail->Password   = $smtpPassword;
+	
+	// From
+	$mail->SetFrom($from, $from_name); //from (verified email address)
+	$mail->addReplyTo($from, $from_name);
+
+	//message
+	$mail->Subject = $subject;
+
+	$mail->Body = $Body;
+	$mail->IsHTML(true);
+	// $mail->addAttachment("img/logo360.png");
+
+	//recipient
+	$mail->AddAddress($to, $to_name); 
 
 
 	//send the message, check for errors
@@ -40,22 +61,11 @@ $mail->AddAddress("name@name.es", "manol");
 	    echo "Message sent!";
 	}
 
+}
 
+// classic way
+function email_classic($from, $from_name, $to, $to_name, $subject, $message){
 
-
-
-
-
-return;
-	// old fashion email
-
-	$to = "name@name.es, info@name.com";
-
-	$subject = "Mail Test at " . strftime("%T", time());
-
-	$message = "This a test";
-
-	$from = "My name <info@name.com>";
 
 	$headers = "From: {$from}\n";
 	$headers .= "Reply-To: {$from}\n";
@@ -67,6 +77,7 @@ return;
 
 	$result = mail($to, $subject, $message, $headers);
 
-	echo $result ? 'Sent' : 'Error';
+	echo $result ? 'Message sent!' : 'Mailer Error';
+}
 
 ?>
